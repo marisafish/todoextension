@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>todo自作</title>
+    <style>
+@import url("https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700&display=swap");
+
+body{
+    font-family: 'Zen Maru Gothic';
+    margin: 0;
+    padding: 0;
+}
+
+#container{
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-image: url(https://min-chi.material.jp/mc/materials/background-c/levee_trail/_levee_trail_1.jpg);    /* 背景画像指定 */
+    background-repeat: no-repeat;
+    background-position:60% 60%;
+    background-size:cover;
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+}
+
+#new-task{
+    padding: 10px;
+    width: calc(100% - 20px);
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    outline: none;
+}
+
+#add-task{
+    padding: 10px;
+    width: 100%;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 13px;
+    transition: opacity 0.3s ease;
+}
+
+#task-list{
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+#task-list li{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #e0e0e0;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#task-list li span{
+    flex-grow: 1;
+    margin-left: 10px;
+    word-break: break-all;
+}
+
+input[type='checkbox']{
+    cursor: pointer;
+}
+
+button:not(#add-task){
+    margin-left: 5px;
+    padding: 5px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+button:hover{
+    opacity: 0.8;
+}
+    </style>
+</head>
+<body>
+    <div id="container">
+    	<h1>todo自作</h1>
+        <input type="text" id="new-task" placeholder="新しいタスクの名前を入力します...">
+        <button id="add-task">タスクを追加</button>
+        <h1>タスク一覧</h1>
+        <ul id="task-list"></ul>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('add-task').addEventListener('click', addTaskFromInput);
+    loadTasks();
+});
+
+function addTaskFromInput() {
+    const taskValue = document.getElementById('new-task').value;
+    if (taskValue) {
+        addTask(taskValue);
+        document.getElementById('new-task').value = '';
+        saveTasks();
+    }
+}
+
+function addTask(taskValue, isCompleted = false) {
+    const ul = document.getElementById('task-list');
+    const li = document.createElement('li');
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = isCompleted;
+    checkbox.addEventListener('change', toggleTask);
+
+    const text = document.createElement('span');
+    text.textContent = taskValue;
+    text.style.textDecoration = isCompleted ? 'line-through' : 'none';
+
+    const editButton = document.createElement('button');
+    editButton.textContent = '編集';
+    editButton.addEventListener('click', editTask);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '削除';
+    deleteButton.addEventListener('click', deleteTask);
+
+    li.appendChild(checkbox);
+    li.appendChild(text);
+    li.appendChild(editButton);
+    li.appendChild(deleteButton);
+
+    ul.appendChild(li);
+
+}
+
+function saveTasks() {
+    const tasks = [];
+    document.querySelectorAll('#task-list li').forEach(function (taskLi) {
+        const text = taskLi.querySelector('span').textContent;
+        const isCompleted = taskLi.querySelector('input').checked;
+        tasks.push({ text, isCompleted });
+    });
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function loadTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks.forEach(function (task) {
+        addTask(task.text, task.isCompleted);
+    });
+}
+
+function toggleTask(event) {
+    const text = event.target.nextElementSibling;
+    text.style.textDecoration = event.target.checked ? 'line-through' : 'none';
+    saveTasks();
+}
+
+function deleteTask(event) {
+    const li = event.target.parentNode;
+    li.parentNode.removeChild(li);
+    saveTasks();
+}
+
+function editTask(event) {
+    const textSpan = event.target.previousElementSibling;
+    const newText = prompt("名前を変える", textSpan.textContent);
+    if (newText !== null) {
+        textSpan.textContent = newText;
+        saveTasks();
+    }
+}
+</script>
+</body>
+</html>

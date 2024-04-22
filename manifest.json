@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "ToDo拡張機能自作",
+    "description": "todo拡張機能を自作してみました。予定に使って下さい。",
+    "version": "1.0",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "permissions": [
+        "storage"
+    ],
+    "icons": {
+        "16": "https://raw.githubusercontent.com/marisafish/todoextension/main/icons8-todo%E3%83%AA%E3%82%B9%E3%83%88-16.png",
+        "32": "https://raw.githubusercontent.com/marisafish/todoextension/main/icons8-todo%E3%83%AA%E3%82%B9%E3%83%88-32.png",
+        "128": "https://raw.githubusercontent.com/marisafish/todoextension/main/list_11481292.png"
+    }
+}
